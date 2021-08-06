@@ -1,15 +1,24 @@
 package com.spring.spring.resources.exceptions;
 
+import java.time.Instant;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.spring.spring.services.exceptions.ObjectNotFoundException;
 
-import org.springframework.http.RequestEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ResoucerExceptionHandler {
 
-    public RequestEntity<StandardError> objectNotFoud(ObjectNotFoundException e, Httpserverlet){
-
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<StandardError> objectNotFoud(ObjectNotFoundException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        StandardError err = new StandardError(Instant.now(), status.value(), "Not found", e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
     
 }
